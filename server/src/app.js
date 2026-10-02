@@ -1,12 +1,21 @@
 import express from 'express';
+import cors from 'cors';
+
 import ticketRoutes from './routes/ticketRoutes.js';
 import { notFoundHandler } from './middleware/notFound.js';
 import { errorHandler } from './middleware/errorHandler.js';
 import { prisma } from './db/prisma.js';
+import { env } from './config/env.js';
 
 // Assembles the Express application, mounting routes and error handling.
 export function createApp() {
   const app = express();
+
+  app.use(
+    cors({
+      origin: env.clientOrigin,
+    })
+  );
 
   app.use(express.json({ limit: '64kb' }));
 
