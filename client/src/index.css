@@ -1,0 +1,201 @@
+@import 'tailwindcss';
+
+/*
+ * Semantic colour tokens. Components reference these instead of raw palette
+ * shades, so the dark theme is a single set of overrides rather than a
+ * `dark:` variant sprinkled through every component.
+ */
+@theme {
+  --font-sans:
+    'Inter', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  --font-mono: ui-monospace, 'SFMono-Regular', Menlo, Consolas, monospace;
+
+  --color-canvas: #f4f5f7;
+  --color-surface: #ffffff;
+  --color-surface-2: #fafbfc;
+  --color-surface-3: #f0f2f5;
+  --color-line: #e3e6eb;
+  --color-line-strong: #d1d6de;
+  --color-ink: #111318;
+  --color-ink-2: #4d5563;
+  --color-ink-3: #828b99;
+  --color-accent: #171a21;
+  --color-accent-ink: #ffffff;
+  --color-accent-soft: #eef0f4;
+
+  --color-high: #b42318;
+  --color-high-soft: #fef3f2;
+  --color-high-line: #fecdcb;
+  --color-med: #b54708;
+  --color-med-soft: #fffaeb;
+  --color-med-line: #fedf89;
+  --color-low: #5a6272;
+  --color-low-soft: #f2f4f7;
+  --color-low-line: #e3e6eb;
+  --color-active: #3538cd;
+  --color-active-soft: #eef4ff;
+  --color-active-line: #c7d7fe;
+  --color-done: #067647;
+  --color-done-soft: #ecfdf3;
+  --color-done-line: #abefc6;
+}
+
+.dark {
+  /* Dark surfaces are tinted rather than pure grey, and text is dimmed so the
+     accent colours stay the brightest thing on screen. */
+  --color-canvas: #0a0c11;
+  --color-surface: #10131a;
+  --color-surface-2: #161a22;
+  --color-surface-3: #1a1f28;
+  --color-line: #222833;
+  --color-line-strong: #323947;
+  --color-ink: #e9ebef;
+  --color-ink-2: #a4acb9;
+  --color-ink-3: #6f7887;
+  --color-accent: #f2f4f7;
+  --color-accent-ink: #101319;
+  --color-accent-soft: #1b202a;
+
+  --color-high: #fda29b;
+  --color-high-soft: #2a1513;
+  --color-high-line: #5e2a25;
+  --color-med: #fec84b;
+  --color-med-soft: #2a2113;
+  --color-med-line: #5d4a1e;
+  --color-low: #98a2b3;
+  --color-low-soft: #1a1e26;
+  --color-low-line: #2c323c;
+  --color-active: #84adff;
+  --color-active-soft: #131c2e;
+  --color-active-line: #2c3d5f;
+  --color-done: #75e0a7;
+  --color-done-soft: #10251a;
+  --color-done-line: #1f4a33;
+
+  --shadow-card: 0 1px 0 rgb(255 255 255 / 0.02);
+}
+
+:root {
+  --shadow-card: 0 1px 2px 0 rgb(16 24 40 / 0.04), 0 1px 3px -1px rgb(16 24 40 / 0.06);
+}
+
+@layer base {
+  html {
+    color-scheme: light;
+  }
+
+  html.dark {
+    color-scheme: dark;
+  }
+
+  body {
+    @apply bg-canvas text-ink antialiased;
+  }
+
+  /* Native controls follow the theme tokens. */
+  select {
+    @apply appearance-none bg-surface;
+  }
+
+  ::selection {
+    background-color: color-mix(in srgb, var(--color-ink) 12%, transparent);
+  }
+}
+
+@layer components {
+  /* The one elevated surface used by every panel. */
+  .card {
+    @apply rounded-lg border border-line bg-surface;
+    box-shadow: var(--shadow-card);
+  }
+
+  .section-label {
+    @apply text-[11px] font-semibold tracking-[0.12em] text-ink-3 uppercase;
+  }
+
+  /* Attention overview: stacks on mobile, becomes equal columns once wide enough. */
+  .attention-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  @media (width >= 30rem) {
+    .attention-grid {
+      grid-template-columns: repeat(var(--columns, 1), minmax(0, 1fr));
+    }
+  }
+
+  /* Six ticket columns: title and customer take the slack, the rest are fixed
+     so the badges and dates line up on every row. */
+  .ticket-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 2.2fr) minmax(0, 1.4fr) 6.5rem 7rem 4rem 6.5rem;
+    column-gap: 1rem;
+  }
+
+  .field-label {
+    @apply mb-1.5 block text-[11px] font-semibold tracking-wider text-ink-2 uppercase;
+  }
+
+  .field-control {
+    @apply w-full rounded-md border border-line-strong bg-surface-3 px-3 py-2 text-sm text-ink
+      placeholder:text-ink-3
+      focus:border-accent focus:bg-surface focus:ring-2 focus:ring-accent/15 focus:outline-none
+      disabled:cursor-not-allowed disabled:opacity-60;
+  }
+
+  .field-control-invalid {
+    @apply border-high focus:border-high focus:ring-high/20;
+  }
+
+  /* Shared button shape is repeated rather than composed with @apply because
+     Tailwind cannot apply a project-defined class from another rule. */
+  .btn-primary,
+  .btn-secondary,
+  .btn-ghost,
+  .btn-icon {
+    @apply inline-flex cursor-pointer items-center justify-center gap-1.5 rounded-md text-sm
+      font-medium transition-colors
+      focus-visible:ring-2 focus-visible:ring-accent/25 focus-visible:outline-none
+      disabled:cursor-not-allowed disabled:opacity-55;
+  }
+
+  .btn-primary {
+    @apply bg-accent px-3.5 py-2 text-accent-ink hover:opacity-90;
+  }
+
+  .btn-secondary {
+    @apply border border-line-strong bg-surface px-3.5 py-2 text-ink-2 hover:bg-surface-2 hover:text-ink;
+  }
+
+  .btn-ghost {
+    @apply px-2.5 py-1.5 text-ink-2 hover:bg-surface-3 hover:text-ink;
+  }
+
+  .btn-icon {
+    @apply size-8 border border-line bg-surface text-ink-2 hover:bg-surface-2 hover:text-ink;
+  }
+}
+
+/* A single, very short acknowledgement when a ticket is marked RESOLVED. */
+@keyframes resolve-ack {
+  from {
+    box-shadow: 0 0 0 0 color-mix(in srgb, var(--color-done) 45%, transparent);
+  }
+  to {
+    box-shadow: 0 0 0 6px color-mix(in srgb, var(--color-done) 0%, transparent);
+  }
+}
+
+.resolve-ack {
+  animation: resolve-ack 900ms ease-out;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

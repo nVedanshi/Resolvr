@@ -1,0 +1,46 @@
+/**
+ * Prisma schema for RESOLVR.
+ *
+ * Enum values are stored as plain text so the API can hand them straight to the
+ * frontend without a translation layer.
+ */
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Priority {
+  LOW
+  MEDIUM
+  HIGH
+}
+
+enum TicketStatus {
+  OPEN
+  IN_PROGRESS
+  RESOLVED
+}
+
+model Ticket {
+  id            Int          @id @default(autoincrement())
+  title         String       @db.VarChar(120)
+  description   String
+  customerEmail String
+  priority      Priority     @default(MEDIUM)
+  status        TicketStatus @default(OPEN)
+  createdAt     DateTime     @default(now())
+  updatedAt     DateTime     @updatedAt
+
+  // Indexes cover the columns used by list sorting, status/priority filters
+  // and the summary aggregation. The trigram indexes that make substring
+  // search fast live in a follow-up migration.
+  @@index([createdAt])
+  @@index([status, createdAt])
+  @@index([priority, status])
+  @@map("tickets")
+}
