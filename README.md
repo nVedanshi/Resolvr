@@ -2,8 +2,8 @@
 
 > A full-stack support ticket dashboard designed to help support teams see what needs attention, understand the current queue, and move through unresolved tickets efficiently.
 
-**Live Demo:** `YOUR_DEPLOYED_APP_URL`  
-**GitHub:** `YOUR_PUBLIC_GITHUB_REPO_URL`
+**Live Demo:** `https://resolvrr.onrender.com/`  
+**GitHub:** `github.com/nVedanshi/Resolvr`
 
 ![RESOLVR Dashboard](./docs/dashboard.png)
 
